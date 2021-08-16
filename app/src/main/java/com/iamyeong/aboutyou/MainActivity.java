@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         recyclerView = findViewById(R.id.rv_main);
-        personViewAdapter = new PersonViewAdapter();
+        personViewAdapter = new PersonViewAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setAdapter(personViewAdapter);
 
