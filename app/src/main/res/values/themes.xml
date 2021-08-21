@@ -3,10 +3,10 @@
     <style name="Theme.AboutYou" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/theme_dark</item>
-        <item name="colorPrimaryVariant">@color/theme_middle_dark</item>
+        <item name="colorPrimaryVariant">@color/theme_dark</item>
         <item name="colorOnPrimary">@color/theme_light</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/theme_middle_dark</item>
+        <item name="colorSecondary">@color/theme_dark</item>
         <item name="colorSecondaryVariant">@color/theme_dark</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->

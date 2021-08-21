@@ -1,75 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:layout_margin="50dp"
+    app:cardCornerRadius="10dp"
     >
 
-    <TextView
-        android:id="@+id/tv_title_memo_expand_form"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="20dp"
-
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="제목"
-        />
-
-    <TextView
-        android:id="@+id/tv_date_memo_expand_form"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/tv_title_memo_expand_form"
-        app:layout_constraintRight_toRightOf="parent"
-
-        android:text="1900.12.31"
-        />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_memo_expand"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@id/tv_date_memo_expand_form"
-
+        android:layout_height="match_parent"
         android:layout_margin="20dp"
         >
 
+
         <TextView
-            android:id="@+id/tv_content_memo_expand"
+            android:id="@+id/tv_title_memo_expand_form"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="가나다라마바사아자차카타파ㅅ하"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="20dp"
 
             android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="제목"
             />
 
-    </androidx.core.widget.NestedScrollView>
+        <TextView
+            android:id="@+id/tv_date_memo_expand_form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/tv_title_memo_expand_form"
+            app:layout_constraintRight_toRightOf="parent"
+
+            android:text="1900.12.31"
+            />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_memo_expand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@id/tv_date_memo_expand_form"
+
+            android:layout_margin="20dp"
+            >
+
+            <TextView
+                android:id="@+id/tv_content_memo_expand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="가나다라마바사아자차카타파ㅅ하"
+
+                android:textColor="@color/black"
+                />
+
+        </androidx.core.widget.NestedScrollView>
 
 
-    <android.widget.Button
-        android:id="@+id/btn_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/scroll_memo_expand"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        <android.widget.Button
+            android:id="@+id/btn_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/scroll_memo_expand"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
 
-        android:background="@drawable/round_fill_button"
+            android:background="@drawable/round_fill_button"
 
-        android:layout_margin="20dp"
-        />
+            android:layout_marginTop="10dp"
+            />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.cardview.widget.CardView>
