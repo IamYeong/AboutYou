@@ -75,12 +75,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        fab.setVisibility(View.INVISIBLE);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        fab.setVisibility(View.VISIBLE);
         /*
         Map<String, Object> user = new HashMap<>();
         user.put("first", "Ada");
@@ -109,5 +113,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+
+
     }
 }

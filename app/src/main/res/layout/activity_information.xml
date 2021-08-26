@@ -87,13 +87,17 @@
         />
 
     <EditText
-        android:layout_width="match_parent"
+        android:id="@+id/et_search_memo"
+        android:layout_width="0dp"
         android:layout_height="40dp"
 
         app:layout_constraintTop_toBottomOf="@id/img_profile_background"
         app:layout_constraintBottom_toBottomOf="@id/front_card_information"
+        app:layout_constraintRight_toLeftOf="@id/tv_sort_memo"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:backgroundTint="@color/theme_dark"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
 
         android:background="@drawable/edit_text_theme_form"
         android:textCursorDrawable="@drawable/edit_text_cursor_theme"
@@ -104,6 +108,20 @@
 
         android:paddingLeft="20dp"
 
+        />
+
+    <TextView
+        android:id="@+id/tv_sort_memo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="날짜순"
+        android:drawableRight="@drawable/ic_baseline_sort_24"
+        android:textColor="@color/white"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_search_memo"
+        app:layout_constraintBottom_toBottomOf="@id/et_search_memo"
+        android:layout_marginRight="10dp"
         />
 
 

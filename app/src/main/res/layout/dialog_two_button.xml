@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_title_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:text="제목"
+        />
+
+    <TextView
+        android:id="@+id/tv_content_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/tv_title_dialog"
+        app:layout_constraintBottom_toTopOf="@id/btn_confirm_dialog"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+
+        android:layout_margin="10dp"
+
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:text="예시 내용"
+        />
+
+
+    <android.widget.Button
+        android:id="@+id/btn_confirm_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/btn_cancel_dialog"
+        app:layout_constraintHorizontal_chainStyle="packed"
+
+        android:background="@drawable/round_fill_button"
+
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/white"
+        android:text="확인"
+        />
+
+    <android.widget.Button
+        android:id="@+id/btn_cancel_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_confirm_dialog"
+        app:layout_constraintHorizontal_chainStyle="packed"
+
+        android:background="@drawable/round_empty_button"
+
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+
+        android:textColor="@color/theme_dark"
+        android:text="취소"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
