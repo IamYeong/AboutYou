@@ -3,6 +3,7 @@ package com.iamyeong.aboutyou;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dto.Person;
@@ -29,18 +31,16 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText editText;
     private PersonViewAdapter personViewAdapter;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
-
+        fab = findViewById(R.id.fab_main);
         recyclerView = findViewById(R.id.rv_main);
         personViewAdapter = new PersonViewAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -48,6 +48,22 @@ public class MainActivity extends AppCompatActivity {
 
         personViewAdapter.addPerson(new Person());
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                InputFragment fragment = new InputFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                if (fragment.isAdded()) {
+                    transaction.remove(fragment);
+                }
+
+                transaction.add(R.id.main_container, fragment);
+                transaction.commit();
+
+            }
+        });
 
     }
 
@@ -65,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        /*
         Map<String, Object> user = new HashMap<>();
         user.put("first", "Ada");
         user.put("last", "Lovelace");
@@ -85,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("dd", "Error adding document", e);
                     }
                 });
+
+         */
     }
 
     @Override

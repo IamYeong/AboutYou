@@ -10,8 +10,8 @@
     >
 
     <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/ic_baseline_person_24"
         app:layout_constraintBottom_toTopOf="@id/tv_splash"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +31,7 @@
 
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:text="About You"
         />
 
