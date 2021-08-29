@@ -19,7 +19,7 @@
             android:id="@+id/img_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_baseline_person_24"
+            android:src="@drawable/ic_baseline_attribution_theme"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -36,7 +36,7 @@
 
             android:text="이름"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="15dp"
 
             android:layout_marginLeft="10dp"
             />

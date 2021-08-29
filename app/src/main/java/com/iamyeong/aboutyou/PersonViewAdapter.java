@@ -72,6 +72,7 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, InformationActivity.class);
+                intent.putExtra("PERSON", new Person());
                 context.startActivity(intent);
             }
         });

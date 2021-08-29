@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/info_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -26,6 +27,21 @@
             app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_24"
             >
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <ImageView
+                    android:id="@+id/img_modify_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_baseline_mode_edit_24"
+                    />
+
+            </FrameLayout>
 
 
         </androidx.appcompat.widget.Toolbar>
@@ -82,8 +98,8 @@
         app:layout_constraintLeft_toLeftOf="@id/img_profile_background"
         app:layout_constraintRight_toRightOf="@id/img_profile_background"
 
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_baseline_person_24"
+        android:layout_margin="30dp"
+        android:src="@drawable/ic_baseline_attribution_24"
         />
 
     <EditText
