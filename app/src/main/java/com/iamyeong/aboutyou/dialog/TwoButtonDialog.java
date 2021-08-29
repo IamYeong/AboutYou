@@ -14,11 +14,17 @@ import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
 
 public class TwoButtonDialog extends Dialog {
 
+    private int optionCode = 0;
+
+    public static final int DIALOG_APP_EXIT = 0;
+    public static final int DIALOG_ACTIVITY_EXIT = 1;
+
+
     private OnDialogButtonClickListener listener;
 
-    public TwoButtonDialog(@NonNull Context context, int titleId, int contentId) {
+    public TwoButtonDialog(@NonNull Context context, int optionCode) {
         super(context);
-        listener = (OnDialogButtonClickListener) context;
+        this.optionCode = optionCode;
     }
 
     @Override
@@ -34,6 +40,17 @@ public class TwoButtonDialog extends Dialog {
         title = findViewById(R.id.tv_title_dialog);
         content = findViewById(R.id.tv_content_dialog);
 
+        switch (optionCode) {
+
+            case 0 :
+                title.setText(R.string.dialog_app_exit_title);
+                break;
+
+            case 1 :
+                title.setText(R.string.dialog_activity_exit_title);
+                break;
+
+        }
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -55,4 +72,9 @@ public class TwoButtonDialog extends Dialog {
         });
 
     }
+
+    public void setOnDialogButtonClickListener(OnDialogButtonClickListener listener) {
+        this.listener = listener;
+    }
+
 }

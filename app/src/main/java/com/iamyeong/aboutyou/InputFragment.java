@@ -9,9 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 
 public class InputFragment extends Fragment {
 
+    private NumberPicker yearPicker, monthPicker, dayPicker;
+    private EditText editName, editIntro;
 
 
     public InputFragment() {

@@ -8,19 +8,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.dto.Person;
+import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
 
+        editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);
         recyclerView = findViewById(R.id.rv_main);
         personViewAdapter = new PersonViewAdapter(this);
@@ -65,6 +71,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                personViewAdapter.filtering(s.toString());
+            }
+        });
+
     }
 
     @Override
@@ -76,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        fab.setVisibility(View.INVISIBLE);
+        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -84,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        fab.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
         /*
         Map<String, Object> user = new HashMap<>();
         user.put("first", "Ada");
@@ -117,9 +140,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
 
+        TwoButtonDialog dialog = new TwoButtonDialog(this, TwoButtonDialog.DIALOG_APP_EXIT);
+        dialog.setOnDialogButtonClickListener(new OnDialogButtonClickListener() {
+            @Override
+            public void onDialogButtonClick(boolean selectButton) {
 
+                if (selectButton) {
+                    finish();
+                } else {
+                    //Nothing
+                }
+
+            }
+        });
+
+        dialog.show();
 
     }
 }

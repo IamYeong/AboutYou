@@ -26,15 +26,34 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
 
     public PersonViewAdapter(Context context) {
         people = new ArrayList<>();
+        copyPeople = new ArrayList<>();
         this.context = context;
     }
 
     public void addPerson(Person person) {
         people.add(person);
+        copyPeople.add(person);
         notifyDataSetChanged();
     }
 
     public void filtering(String pattern) {
+
+        people.clear();
+
+        if (pattern.length() == 0) {
+            people.addAll(copyPeople);
+        } else {
+
+            for (Person person : copyPeople) {
+
+                if (person.getName().contains(pattern)) {
+                    people.add(person);
+                }
+            }
+
+        }
+
+        notifyDataSetChanged();
 
     }
 

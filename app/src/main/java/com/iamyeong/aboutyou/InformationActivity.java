@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.iamyeong.aboutyou.dto.Memo;
@@ -17,6 +20,8 @@ public class InformationActivity extends AppCompatActivity {
     private MemoViewAdapter memoViewAdapter;
     private Toolbar toolbar;
     private TextView sortText;
+    private EditText editText;
+    private boolean sortAscending = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,7 @@ public class InformationActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar_information);
         sortText = findViewById(R.id.tv_sort_memo);
+        editText = findViewById(R.id.et_search_memo);
 
         recyclerView = findViewById(R.id.rv_info);
         memoViewAdapter = new MemoViewAdapter(this);
@@ -43,8 +49,46 @@ public class InformationActivity extends AppCompatActivity {
         sortText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Date sort
+                if (sortAscending) {
+                    memoViewAdapter.sortAscendingOrder();
+                } else {
+                    memoViewAdapter.sortDescendingOrder();
+                }
             }
         });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                memoViewAdapter.findMemoByTitle(s.toString());
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //불러오기
+
     }
 }

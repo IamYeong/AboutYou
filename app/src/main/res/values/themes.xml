@@ -22,4 +22,12 @@
     <style name="Theme.AboutYou.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.AboutYou.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar"
+        >
+        <item name="android:textColorHighlight">@color/white</item>
+        <item name="colorControlNormal">@color/theme_dark</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textSize">30dp</item>
+    </style>
 </resources>
