@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class Person implements Serializable {
 
+    public static final int PERSON_SEX_FEMALE = 0;
+    public static final int PERSON_SEX_MALE = 1;
+
     private String name;
     private int birthYear;
     private int birthMonth;

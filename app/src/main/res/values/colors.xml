@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_opacity">#40FFFFFF</color>
+    <color name="black_opacity">#40000000</color>
     <color name="grey">#CCCCCC</color>
     <color name="theme_middle_dark">#86A8E7</color>
     <color name="theme_dark">#00546d</color>

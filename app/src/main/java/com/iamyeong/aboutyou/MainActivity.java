@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
+import com.kakao.sdk.common.util.Utility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,13 +39,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText;
     private PersonViewAdapter personViewAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FloatingActionButton fab;
+    private ImageView fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
+
+        System.out.println(Utility.INSTANCE.getKeyHash(this));
 
         editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                 transaction.add(R.id.main_container, fragment);
                 transaction.commit();
+
 
             }
         });
@@ -107,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+
         /*
         Map<String, Object> user = new HashMap<>();
         user.put("first", "Ada");

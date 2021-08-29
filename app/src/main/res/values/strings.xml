@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">AboutYou</string>
+
+    <string name="kakao_native_app_key">617028f723b9be2e9e4d701e0a5915d3</string>
+
     <string name="title_activity_main2">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -9,10 +12,9 @@
 
     <string name="dialog_confirm">네!!</string>
     <string name="dialog_cancel">아뇨!!</string>
-    
+
     <string name="dialog_app_exit_title">앱을 완전히 끌까요??</string>
     <string name="dialog_activity_exit_title">지금 화면을 끌까요??</string>
-
 
 
     <string name="hello_first_fragment">Hello first fragment</string>

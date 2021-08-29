@@ -38,18 +38,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+
+    <ImageView
         android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="20dp"
 
-        android:backgroundTint="@color/theme_dark"
-        android:src="@drawable/ic_baseline_add_24"
+        android:layout_margin="30dp"
+        android:background="@drawable/custom_circle_button"
         />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_add_24"
+
+        app:layout_constraintTop_toTopOf="@id/fab_main"
+        app:layout_constraintBottom_toBottomOf="@id/fab_main"
+        app:layout_constraintLeft_toLeftOf="@id/fab_main"
+        app:layout_constraintRight_toRightOf="@id/fab_main"
+
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

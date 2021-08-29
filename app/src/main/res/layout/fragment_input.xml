@@ -87,8 +87,8 @@
                     android:backgroundTint="@color/white"
 
                     android:textCursorDrawable="@drawable/edit_text_cursor_white"
-
-                    app:layout_constraintTop_toBottomOf="@id/tv_name_title_input"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     />
 
                 <TextView
@@ -139,6 +139,8 @@
 
                         android:layout_marginHorizontal="20dp"
 
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         android:backgroundTint="@color/white"
                         />
                 </LinearLayout>
@@ -218,6 +220,7 @@
                         />
 
                     <CheckBox
+                        android:id="@+id/chk_box_male_input"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/white"
@@ -240,6 +243,7 @@
                         />
 
                     <CheckBox
+                        android:id="@+id/chk_box_female_input"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/white"
@@ -274,8 +278,8 @@
                     android:backgroundTint="@color/white"
 
                     android:textCursorDrawable="@drawable/edit_text_cursor_white"
-
-                    app:layout_constraintTop_toBottomOf="@id/tv_name_title_input"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     />
 
 
