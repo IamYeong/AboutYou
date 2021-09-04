@@ -19,15 +19,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
-import com.kakao.sdk.common.util.Utility;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
-
-        System.out.println(Utility.INSTANCE.getKeyHash(this));
 
         editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);

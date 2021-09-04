@@ -1,117 +1,129 @@
 package com.iamyeong.aboutyou;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
-import com.kakao.sdk.auth.model.OAuthToken;
-import com.kakao.sdk.talk.TalkApiClient;
-import com.kakao.sdk.talk.model.Friend;
-import com.kakao.sdk.talk.model.Friends;
-import com.kakao.sdk.user.UserApiClient;
-import com.kakao.sdk.user.model.Account;
-import com.kakao.sdk.user.model.Profile;
-import com.kakao.sdk.user.model.User;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.List;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
+import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button kakaoLoginButton, appLoginButton;
-    private CheckBox autoLoginCheck;
-    private boolean isAutoLogin = false;
+    private Button googleLoginButton, facebookLoginButton, emailLoginButton;
+    private Intent intent;
 
-    private Function2<OAuthToken, Throwable, Unit> function2 = new Function2<OAuthToken, Throwable, Unit>() {
-        @Override
-        public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+    private static final String GOOGLE_TAG = "com.iamyeong.aboutyou.google.tag";
+    private static final int RC_SIGN_IN = 9001;
 
-            if (oAuthToken != null) {
+    private FirebaseAuth firebaseAuth;
+    private GoogleSignInClient googleSignInClient;
 
-            } else {
+    private ActivityResultLauncher<Intent> activityResultLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
 
-            }
+                            if (result.getResultCode() == Activity.RESULT_OK) {
 
+                                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                                firebaseAuthWithGoogle(task.getResult().getIdToken());
 
+                            }
 
-            return null;
-        }
-    };
+                        }
+                    }
+
+            );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        kakaoLoginButton = findViewById(R.id.btn_kakao_login);
-        appLoginButton = findViewById(R.id.btn_app_login);
-        autoLoginCheck = findViewById(R.id.chk_box_kakao_auto_login);
+        intent = new Intent(LoginActivity.this, SplashActivity.class);
+        googleLoginButton = findViewById(R.id.btn_google_login);
 
-        //파이어스토어에 자동로그인 여부 저장할 것
-        kakaoLoginButton.setOnClickListener(new View.OnClickListener() {
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        googleLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //구글 로그인 시작
+                GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(GOOGLE_TAG)
+                        .requestEmail()
+                        .build();
 
-                if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)) {
+                googleSignInClient = GoogleSignIn.getClient(LoginActivity.this, googleSignInOptions);
 
-                } else {
-
-                }
+                activityResultLauncher.launch(new Intent(googleSignInClient.getSignInIntent()));
 
             }
         });
 
+    }
+
+    //true : 현재 유저 없음
+    private boolean checkCurrentUser() {
+
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            updateUI(firebaseUser);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void updateUI(FirebaseUser user) {
+
+        Toast.makeText(this, user.getEmail(), Toast.LENGTH_SHORT).show();
 
     }
 
-    private void getMe() {
-
-        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
-            @Override
-            public Unit invoke(User user, Throwable throwable) {
-
-                if (user != null) {
-
-                    Account account = user.getKakaoAccount();
-                    Profile profile = account.getProfile();
-
-                    long kakaoId = user.getId();
-                    String knickName = profile.getNickname();
-                    String thumbnail = profile.getThumbnailImageUrl();
-                    if (account.isEmailValid()) {
-                        String email = account.getEmail();
-                    }
-
-                    String year = account.getBirthyear();
-                    String monthDay = account.getBirthday();
-                    TalkApiClient.getInstance().friends(new Function2<Friends<Friend>, Throwable, Unit>() {
-                        @Override
-                        public Unit invoke(Friends<Friend> friendFriends, Throwable throwable) {
-
-                            List<Friend> friends = friendFriends.getElements();
-
-                            for (Friend friend : friends) {
-                                friend.getUuid();
-                                friend.getId();
-                                friend.getProfileNickname();
-                                friend.getProfileThumbnailImage();
-                            }
-
-                            return null;
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            updateUI(null);
                         }
-                    });
-
-                }
-
-                return null;
-            }
-        });
-
+                    }
+                });
     }
-
 }
