@@ -17,49 +17,64 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button googleLoginButton, facebookLoginButton, emailLoginButton;
+    private Button googleLoginButton, emailLoginButton;
+    private LoginButton facebookLoginButton;
     private Intent intent;
 
     private static final String GOOGLE_TAG = "com.iamyeong.aboutyou.google.tag";
+    private static final String FACEBOOK_TAG = "com.iamyeong.aboutyou.facebook.tag";
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
+    private CallbackManager callbackManager;
+    //private CallbackManager callbackManager;
 
-    private ActivityResultLauncher<Intent> activityResultLauncher =
+    private ActivityResultCallback<ActivityResult> googleCallback = new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+            firebaseAuthWithGoogle(task.getResult().getIdToken());
+        }
+    };
+
+    private ActivityResultLauncher<Intent> googleResultLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
-                    new ActivityResultCallback<ActivityResult>() {
-                        @Override
-                        public void onActivityResult(ActivityResult result) {
+                    googleCallback);
 
-                            if (result.getResultCode() == Activity.RESULT_OK) {
+    private ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("")
+            .setAndroidPackageName("com.iamyeong.aboutyou", true, "26")
+            .build();
 
-                                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                                firebaseAuthWithGoogle(task.getResult().getIdToken());
-
-                            }
-
-                        }
-                    }
-
-            );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +83,16 @@ public class LoginActivity extends AppCompatActivity {
 
         intent = new Intent(LoginActivity.this, SplashActivity.class);
         googleLoginButton = findViewById(R.id.btn_google_login);
+        facebookLoginButton = findViewById(R.id.btn_facebook_login);
+        emailLoginButton = findViewById(R.id.btn_email_login);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        callbackManager = CallbackManager.Factory.create();
+
+
+        //logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
 
         googleLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,10 +105,47 @@ public class LoginActivity extends AppCompatActivity {
 
                 googleSignInClient = GoogleSignIn.getClient(LoginActivity.this, googleSignInOptions);
 
-                activityResultLauncher.launch(new Intent(googleSignInClient.getSignInIntent()));
+                googleResultLauncher.launch(new Intent(googleSignInClient.getSignInIntent()));
+
 
             }
         });
+
+        facebookLoginButton.setReadPermissions("", "");
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+
+                    }
+                });
+
+        emailLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                firebaseAuth.sendSignInLinkToEmail("email", actionCodeSettings)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                if (task.isSuccessful()) {
+
+                                }
+                            }
+                        });
+            }
+        });
+
 
     }
 
@@ -125,5 +185,24 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+
+    private void firebaseAuthWithFacebook(AccessToken token) {
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                        }
+                    }
+                });
+
     }
 }
