@@ -65,13 +65,27 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
+    private ActivityResultCallback<ActivityResult> facebookCallback = new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+
+        }
+    };
+
     private ActivityResultLauncher<Intent> googleResultLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     googleCallback);
 
+    private ActivityResultLauncher<Intent> facebookResultLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    facebookCallback
+            );
+
     private ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
             .setUrl("")
+            .setHandleCodeInApp(true)
             .setAndroidPackageName("com.iamyeong.aboutyou", true, "26")
             .build();
 
@@ -111,21 +125,26 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        facebookLoginButton.setReadPermissions("", "");
+        facebookLoginButton.setReadPermissions("email", "public_profile");
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
+                        Toast.makeText(LoginActivity.this, loginResult.toString(), Toast.LENGTH_SHORT).show();
+
+                        firebaseAuthWithFacebook(loginResult.getAccessToken());
                     }
 
                     @Override
                     public void onCancel() {
 
+                        Toast.makeText(LoginActivity.this, "CANCEL", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(FacebookException error) {
 
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -139,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
 
                                 if (task.isSuccessful()) {
-
+                                    Toast.makeText(LoginActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -197,8 +216,11 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            if (user != null) {
+                                Toast.makeText(LoginActivity.this, user.getEmail(), Toast.LENGTH_SHORT).show();
+                            }
+
 
                         }
                     }
