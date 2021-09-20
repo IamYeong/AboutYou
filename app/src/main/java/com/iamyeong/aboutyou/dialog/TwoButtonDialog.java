@@ -18,6 +18,7 @@ public class TwoButtonDialog extends Dialog {
 
     public static final int DIALOG_APP_EXIT = 0;
     public static final int DIALOG_ACTIVITY_EXIT = 1;
+    public static final int DIALOG_EMAIL_ACCOUNT = 2;
 
 
     private OnDialogButtonClickListener listener;
@@ -48,6 +49,11 @@ public class TwoButtonDialog extends Dialog {
 
             case 1 :
                 title.setText(R.string.dialog_activity_exit_title);
+                break;
+
+            case 2 :
+                title.setText(R.string.dialog_create_email_account_title);
+                content.setText(R.string.dialog_create_email_account_content);
                 break;
 
         }
