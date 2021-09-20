@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.dto.Person;
@@ -36,12 +38,18 @@ public class MainActivity extends AppCompatActivity {
     private PersonViewAdapter personViewAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ImageView fab;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        user = (FirebaseUser) intent.getParcelableExtra("USER");
+
+        Toast.makeText(this, user.getEmail() + ", " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
         editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);
