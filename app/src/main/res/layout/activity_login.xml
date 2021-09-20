@@ -7,57 +7,37 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
     android:background="@color/theme_light"
+    android:orientation="vertical"
     >
 
-    <android.widget.Button
-        android:id="@+id/btn_google_login"
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="안녕하세요!"
+        app:layout_constraintBottom_toTopOf="@id/frame_layout_login"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:layout_margin="20dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/frame_layout_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_theme_form"
-        android:layout_marginBottom="20dp"
-
-        android:layout_marginHorizontal="20dp"
-        android:text="구글 로그인"
-        android:textColor="@color/theme_light"
-        android:textSize="30dp"
-        android:textStyle="bold"
-
         app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <include
+            layout="@layout/login_form"
+
+            />
+
+    </FrameLayout>
 
 
-        />
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/btn_facebook_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="20dp"
-
-        android:layout_marginHorizontal="20dp"
-
-        app:layout_constraintBottom_toTopOf="@id/btn_google_login"
-
-        />
-
-    <android.widget.Button
-        android:id="@+id/btn_email_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_theme_form"
-        android:layout_marginBottom="20dp"
-
-        android:layout_marginHorizontal="20dp"
-        android:text="email 로그인"
-        android:textColor="@color/theme_light"
-        android:textSize="30dp"
-        android:textStyle="bold"
-
-        app:layout_constraintBottom_toTopOf="@id/btn_facebook_login"
-
-
-
-        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
