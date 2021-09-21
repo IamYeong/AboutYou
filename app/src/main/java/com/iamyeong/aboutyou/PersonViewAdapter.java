@@ -68,6 +68,8 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
 
+        holder.name.setText(people.get(position).getName());
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

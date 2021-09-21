@@ -60,9 +60,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEdit, pwEdit;
     private Button emailLoginButton, googleLoginButton;
-    //private SignInButton
     private LoginButton facebookLoginButton;
     private FirebaseAuth mAuth;
+    private boolean isFirst = false;
     //private ActionCodeSettings actionCodeSettings;
     //private Uri deepLink;
 
@@ -77,7 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
     );
-    private ActivityResultCallback<ActivityResult> activityResultCallback;
+
+    //private ActivityResultCallback<ActivityResult> activityResultCallback;
 
     private static final String GOOGLE_TAG = "com.iamyeong.aboutyou.google.tag";
     private static final String FACEBOOK_TAG = "com.iamyeong.aboutyou.facebook.tag";
@@ -152,6 +153,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     //현재 유저 정보가 있으면 true 반환, 없으면 false 반환
     private boolean checkCurrentUser() {
@@ -213,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onDialogButtonClick(boolean selectButton) {
                                     if (selectButton) {
+                                        isFirst = true;
                                         createEmailAccount(email, password);
                                     } else {
                                         dialog.dismiss();
@@ -254,6 +266,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                     }
+
                 });
     }
 
@@ -283,6 +296,7 @@ public class LoginActivity extends AppCompatActivity {
     private void startSplash(FirebaseUser user) {
         Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
         intent.putExtra("USER", user);
+        intent.putExtra("FIRST", isFirst);
         startActivity(intent);
         finish();
     }

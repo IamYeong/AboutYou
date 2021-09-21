@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dto.Memo;
 import com.iamyeong.aboutyou.dto.Person;
 
@@ -29,6 +30,7 @@ public class InformationActivity extends AppCompatActivity {
     private boolean sortAscending = true;
     private ImageView modifyImage;
     private Person person;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class InformationActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         person = (Person)intent.getSerializableExtra("PERSON");
+
+        db = FirebaseFirestore.getInstance();
 
         toolbar = findViewById(R.id.toolbar_information);
         sortText = findViewById(R.id.tv_sort_memo);
@@ -117,4 +121,23 @@ public class InformationActivity extends AppCompatActivity {
         //불러오기
 
     }
+
+    private void selectMemos() {
+
+
+
+    }
+
+    private void updateMemo() {
+
+    }
+
+    private void deleteMemo() {
+
+    }
+
+    private void updateProfile() {
+
+    }
+
 }
