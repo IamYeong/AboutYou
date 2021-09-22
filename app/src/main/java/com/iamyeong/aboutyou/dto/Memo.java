@@ -5,6 +5,15 @@ public class Memo implements Comparable<Memo> {
     private String title;
     private String content;
     private long date;
+    private String documentId;
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
 
     public String getTitle() {
         return title;

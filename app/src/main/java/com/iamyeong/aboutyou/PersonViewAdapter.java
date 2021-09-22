@@ -43,6 +43,11 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void clearPeople() {
+        people.clear();
+        copyPeople.clear();
+    }
+
     public void filtering(String pattern) {
 
         people.clear();

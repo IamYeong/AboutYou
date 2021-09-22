@@ -110,7 +110,7 @@ public class MemoFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateMemo();
+
                 listener.onFragmentListener(memo);
             }
         });

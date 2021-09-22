@@ -161,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            Person person = new Person();
-            person.setName(name);
             Map<String, Object> map = new HashMap<>();
             map.put("user_uid", user.getUid());
             map.put("person_name", name);

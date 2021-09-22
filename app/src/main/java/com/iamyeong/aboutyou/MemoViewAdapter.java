@@ -1,9 +1,11 @@
 package com.iamyeong.aboutyou;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -21,6 +23,7 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
     private List<Memo> memos;
     private List<Memo> memosForFiltering;
     private Context context;
+    //SimpleDataFormat
 
     public MemoViewAdapter(Context context) {
         memos = new ArrayList<>();
@@ -32,6 +35,13 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
         memos.add(memo);
         memosForFiltering.add(memo);
         notifyDataSetChanged();
+    }
+
+    public void clearMemos() {
+
+        memos.clear();
+        memosForFiltering.clear();
+
     }
 
     public void findMemoByTitle(String pattern) {
@@ -77,11 +87,15 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MemoViewHolder holder, int position) {
 
+        Memo memo = memos.get(position);
+
+        holder.title.setText(memo.getTitle());
+        holder.content.setText(memo.getContent());
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MemoDialog dialog = new MemoDialog(context);
-                dialog.show();
+
             }
         });
 
@@ -95,12 +109,16 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
 
 class MemoViewHolder extends RecyclerView.ViewHolder {
 
-    protected CardView cardView;
+    //Default
+    CardView cardView;
+    TextView title, content;
 
     public MemoViewHolder(@NonNull View itemView) {
         super(itemView);
 
         cardView = itemView.findViewById(R.id.card_memo);
+        title = itemView.findViewById(R.id.tv_title_memo_list);
+        content = itemView.findViewById(R.id.tv_content_memo_list);
 
     }
 }

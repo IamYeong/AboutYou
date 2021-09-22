@@ -30,7 +30,9 @@ import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.dto.User;
 import com.iamyeong.aboutyou.listener.OnFragmentDataNotifyListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InformationActivity extends AppCompatActivity implements OnFragmentDataNotifyListener<Memo> {
 
@@ -48,6 +50,7 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
     private MemoFragment fragment;
     private DocumentReference document;
     private int sortFlag = 0;
+    private int searchFlag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +121,12 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+
+                //searchFlag를 조작하는 UI를 추가하고
+                //제목검색 / 내용검색 / 태그검색 / 기간검색 추가할 것.
+
                 memoViewAdapter.findMemoByTitle(s.toString());
+
             }
         });
 
@@ -163,9 +171,20 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
 
     private void addMemo(Memo memo) {
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("document_id", memo.getDocumentId());
+        map.put("memo_title", memo.getTitle());
+        map.put("memo_content", memo.getContent());
 
+        document.collection("MEMO")
+                .add(map)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        selectMemos();
+                    }
+                });
 
-        selectMemos();
     }
 
     private void selectMemos() {
@@ -179,13 +198,23 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
                         //문서가 비어있지 않다면
                         if (task.getResult().getDocuments().size() != 0 && task.getResult().getDocuments() != null) {
 
+                            LoadingDialog dialog = new LoadingDialog(InformationActivity.this);
+                            dialog.show();
+
+                            memoViewAdapter.clearMemos();
+
                             for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                                 Memo memo = new Memo();
                                 memo.setTitle(doc.get("memo_title").toString());
                                 memo.setContent(doc.get("memo_content").toString());
+                                memo.setDocumentId(doc.getId());
 
                                 memoViewAdapter.addMemo(memo);
                             }
+
+                            //정렬
+
+                            dialog.dismiss();
 
                         }
 
@@ -196,15 +225,63 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
 
     private void updateMemo(Memo memo) {
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("document_id", memo.getDocumentId());
+        map.put("memo_title", memo.getTitle());
+        map.put("memo_content", memo.getContent());
+
+
+        document.collection("MEMO")
+                .document(memo.getDocumentId())
+                .set(map)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        selectMemos();
+                    }
+                });
+
     }
 
     private void deleteMemo(Memo memo) {
+
+        document.collection("MEMO")
+                .document(memo.getDocumentId())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        selectMemos();
+                    }
+                });
 
     }
 
     private void updateProfile() {
 
         nameText.setText(person.getName());
+
+    }
+
+    private void sortMemos() {
+        //이 코드를 어댑터로 옮길 수도 있음.
+
+        switch(sortFlag) {
+            case 0 :
+                //날짜 최신순(내림차순)
+                break;
+
+            case 1 :
+                //날짜 오래된순(오름차순)
+                break;
+
+            case 2 :
+                //수정날짜 최신순
+                break;
+
+
+        }
+
 
     }
 
@@ -227,7 +304,16 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
     @Override
     public void onFragmentListener(Memo memo) {
 
-        addMemo(memo);
+        if (fragment.isAdded()) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.remove(fragment);
+        }
+
+        if (memo.getDocumentId() == null) {
+            addMemo(memo);
+        } else {
+            updateMemo(memo);
+        }
 
         //완료되면 로딩 닫고 프래그먼트 제거.
 
