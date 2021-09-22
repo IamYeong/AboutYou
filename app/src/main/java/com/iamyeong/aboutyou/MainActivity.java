@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
+                            personViewAdapter.clearPeople();
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
                             for (DocumentSnapshot doc : documents) {
 

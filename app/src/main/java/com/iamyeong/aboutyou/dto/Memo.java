@@ -1,6 +1,8 @@
 package com.iamyeong.aboutyou.dto;
 
-public class Memo implements Comparable<Memo> {
+import java.io.Serializable;
+
+public class Memo implements Comparable<Memo>, Serializable {
 
     private String title;
     private String content;

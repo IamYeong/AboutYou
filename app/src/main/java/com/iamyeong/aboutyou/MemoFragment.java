@@ -56,9 +56,14 @@ public class MemoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_memo, container, false);
         Button confirmButton;
 
-        title = view.findViewById(R.id.et_title_memo);
-        content = view.findViewById(R.id.et_content_memo);
-        confirmButton = view.findViewById(R.id.btn_memo_confirm);
+        title = view.findViewById(R.id.et_title_memo_fragment);
+        content = view.findViewById(R.id.et_content_memo_fragment);
+        confirmButton = view.findViewById(R.id.btn_memo_fragment_confirm);
+
+        memo = (Memo) getArguments().getSerializable("MEMO");
+        title.setText(memo.getTitle());
+        content.setText(memo.getContent());
+        memo.setDocumentId(null);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar_memo);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,6 +116,7 @@ public class MemoFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                updateMemo();
                 listener.onFragmentListener(memo);
             }
         });
@@ -133,6 +139,7 @@ public class MemoFragment extends Fragment {
 
         String titleChar = title.getText().toString();
         String contentChar = content.getText().toString();
+        //날짜
 
         memo.setTitle(titleChar);
         memo.setContent(contentChar);

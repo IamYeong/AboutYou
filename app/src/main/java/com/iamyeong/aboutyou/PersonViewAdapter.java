@@ -44,8 +44,12 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     }
 
     public void clearPeople() {
-        people.clear();
-        copyPeople.clear();
+
+        if (people != null) {
+            people.clear();
+            copyPeople.clear();
+        }
+
     }
 
     public void filtering(String pattern) {

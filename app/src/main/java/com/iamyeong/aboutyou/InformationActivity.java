@@ -60,7 +60,7 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
         //정보 받기
         Intent intent = getIntent();
         person = (Person)intent.getSerializableExtra("PERSON");
-        user = (FirebaseUser) intent.getSerializableExtra("USER");
+        user = (FirebaseUser) intent.getParcelableExtra("USER");
         db = FirebaseFirestore.getInstance();
         document = db.collection(getString(R.string.app_package_name))
                 .document(user.getUid()).collection("PEOPLE")
@@ -134,8 +134,18 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
             @Override
             public void onClick(View v) {
 
+                fab.setVisibility(View.INVISIBLE);
+
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 fragment = new MemoFragment();
+                fragment.setDataListener(InformationActivity.this);
+                Bundle bundle = new Bundle();
+                Memo memo = new Memo();
+                memo.setTitle("");
+                memo.setContent("");
+                bundle.putSerializable("MEMO", memo);
+                fragment.setArguments(bundle);
+
                 transaction.addToBackStack(null);
 
                 if (fragment.isAdded()) {
@@ -308,6 +318,8 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.remove(fragment);
         }
+
+        fab.setVisibility(View.VISIBLE);
 
         if (memo.getDocumentId() == null) {
             addMemo(memo);
