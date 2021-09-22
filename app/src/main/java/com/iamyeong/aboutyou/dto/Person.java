@@ -13,9 +13,16 @@ public class Person implements Serializable {
     private int birthDay;
     private String group;
     private String tinyInfo;
-
-    //즐겨찾기
+    private String pathId;
     private boolean started;
+
+    public String getPathId() {
+        return pathId;
+    }
+
+    public void setPathId(String pathId) {
+        this.pathId = pathId;
+    }
 
     public String getName() {
         return name;

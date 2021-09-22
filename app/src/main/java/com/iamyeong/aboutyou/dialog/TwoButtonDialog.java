@@ -19,6 +19,8 @@ public class TwoButtonDialog extends Dialog {
     public static final int DIALOG_APP_EXIT = 0;
     public static final int DIALOG_ACTIVITY_EXIT = 1;
     public static final int DIALOG_EMAIL_ACCOUNT = 2;
+    public static final int DIALOG_DELETE_MEMO = 3;
+    public static final int DIALOG_FINISH_MEMO = 4;
 
 
     private OnDialogButtonClickListener listener;
@@ -54,6 +56,16 @@ public class TwoButtonDialog extends Dialog {
             case 2 :
                 title.setText(R.string.dialog_create_email_account_title);
                 content.setText(R.string.dialog_create_email_account_content);
+                break;
+
+            case 3 :
+                title.setText(R.string.dialog_delete_memo_title);
+                content.setText(R.string.dialog_delete_memo_content);
+                break;
+
+            case 4 :
+                title.setText(R.string.dialog_finish_memo_title);
+                content.setText(R.string.dialog_finish_memo_content);
                 break;
 
         }

@@ -12,7 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.firestore.auth.User;
 import com.iamyeong.aboutyou.dto.Person;
 
 import java.util.ArrayList;
@@ -23,11 +25,16 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     private List<Person> people;
     private List<Person> copyPeople;
     private Context context;
+    private FirebaseUser user;
 
     public PersonViewAdapter(Context context) {
         people = new ArrayList<>();
         copyPeople = new ArrayList<>();
         this.context = context;
+    }
+
+    public void setUser(FirebaseUser user) {
+        this.user = user;
     }
 
     public void addPerson(Person person) {
@@ -78,6 +85,7 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, InformationActivity.class);
                 intent.putExtra("PERSON", person);
+                intent.putExtra("USER", user);
                 context.startActivity(intent);
             }
         });

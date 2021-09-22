@@ -1,4 +1,9 @@
 package com.iamyeong.aboutyou.dto;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+
+
 }

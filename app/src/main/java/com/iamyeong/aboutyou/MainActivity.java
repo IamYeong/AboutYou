@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Adapter set
         personViewAdapter = new PersonViewAdapter(this);
+        personViewAdapter.setUser(user);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setAdapter(personViewAdapter);
 
@@ -179,13 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectPeople() {
 
-        //Firestore uid 에 해당하는 친구리스트를 객체로 파싱하여 가져올 것.
-        //메모까지 다 가져와야 하는데 속도를 어떻게 개선할 것인가.
-        //그냥 따로따로 해보자! 여기서는 친구 리스트만 조회! InfoActivity 에서는 그 친구에 해당하는 메모리스트만 조회!
-        //유니크한 문서의 아이디별로 Person 객체 리스트를 만들어놓으면,
-        //특정 지인을 클릭헀을 때, 아이디로 콜렉션을 찾고, 프로필과 메모를 조회,
-        //UI 갱신가능
-
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(MainActivity.this);
             loadingDialog.show();
@@ -204,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 Person person = new Person();
                                 person.setName(doc.get("person_name").toString());
-
+                                person.setPathId(doc.getId());
                                 personViewAdapter.addPerson(person);
 
                             }

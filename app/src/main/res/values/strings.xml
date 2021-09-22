@@ -6,11 +6,10 @@
     <string name="facebook_app_id">891878308429231</string>
     <string name="fb_login_protocol_scheme">fb891878308429231</string>
     <string name="app_key_hash">Bmce+9aHdOoVtE7fS3B07tfj7Bc=</string>
-    
+
     <string name="firestore_key_name"></string>
     <string name="firestore_key_number"></string>
     <string name="firestore_key_birth"></string>
-
 
 
     <string name="title_activity_main2">MainActivity</string>
@@ -29,6 +28,11 @@
     <string name="dialog_create_email_account_title">이메일로 즉시 가입하실래요?</string>
     <string name="dialog_create_email_account_content">만약 이미 있으시다면 다시 시도해보세요..!</string>
 
+    <string name="dialog_delete_memo_title">해당 메모를 삭제할까요?</string>
+    <string name="dialog_delete_memo_content">이후에 복구되지 않습니다!</string>
+
+    <string name="dialog_finish_memo_title">저장 안 하는거죠?</string>
+    <string name="dialog_finish_memo_content">저장하려면 아래에 확인버튼이에요!</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
