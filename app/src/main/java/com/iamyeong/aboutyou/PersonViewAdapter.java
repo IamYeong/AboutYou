@@ -68,13 +68,16 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
 
-        holder.name.setText(people.get(position).getName());
+        Person person = people.get(position);
+
+        holder.name.setText(person.getName());
+        //...
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, InformationActivity.class);
-                intent.putExtra("PERSON", new Person());
+                intent.putExtra("PERSON", person);
                 context.startActivity(intent);
             }
         });

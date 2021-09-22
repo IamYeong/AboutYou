@@ -22,18 +22,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
 import android.provider.ContactsContract;
 
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText;
     private PersonViewAdapter personViewAdapter;
     private FirebaseFirestore db;
+    private DocumentReference firestoreDoc;
     private ImageView fab;
     private FirebaseUser user;
     private boolean isFirst;
+    private LoadingDialog loadingDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, user.getEmail() + ", " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
         db = FirebaseFirestore.getInstance();
+        firestoreDoc = db.collection(getString(R.string.app_package_name)).document(user.getUid());
+
+        //System.out.println(user.getUid());
 
         //Find id
         editText = findViewById(R.id.et_search_main);
@@ -128,70 +140,40 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         if (isFirst) {
+            isFirst = false;
             addContacts();
         } else {
             selectPeople();
         }
 
-        /*
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-
-// Add a new document with a generated ID
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("dddd", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("dd", "Error adding document", e);
-                    }
-                });
-
-         */
     }
 
     private void addContacts() {
 
+        loadingDialog = new LoadingDialog(MainActivity.this);
+        loadingDialog.show();
+
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
 
-
-        //첫번째가 패스되버리면 do while 문으로 바꿀 것.
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
             Person person = new Person();
             person.setName(name);
+            Map<String, Object> map = new HashMap<>();
+            map.put("user_uid", user.getUid());
+            map.put("person_name", name);
+            map.put("person_number", number);
+            //...
 
-            personViewAdapter.addPerson(person);
 
-            /*
-            db.collection(getString(R.string.app_package_name))
-                    .document("UID")
-                    .collection().document("profile")
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+            firestoreDoc.collection("PEOPLE").add(map);
 
-                        }
-                    });
-
-            //Firestore 저장
-
-             */
 
         }
-
-        cursor.close();
+        selectPeople();
 
     }
 
@@ -200,7 +182,40 @@ public class MainActivity extends AppCompatActivity {
         //Firestore uid 에 해당하는 친구리스트를 객체로 파싱하여 가져올 것.
         //메모까지 다 가져와야 하는데 속도를 어떻게 개선할 것인가.
         //그냥 따로따로 해보자! 여기서는 친구 리스트만 조회! InfoActivity 에서는 그 친구에 해당하는 메모리스트만 조회!
+        //유니크한 문서의 아이디별로 Person 객체 리스트를 만들어놓으면,
+        //특정 지인을 클릭헀을 때, 아이디로 콜렉션을 찾고, 프로필과 메모를 조회,
+        //UI 갱신가능
 
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(MainActivity.this);
+            loadingDialog.show();
+        }
+
+        firestoreDoc.collection("PEOPLE")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            for (DocumentSnapshot doc : documents) {
+
+                                Person person = new Person();
+                                person.setName(doc.get("person_name").toString());
+
+                                personViewAdapter.addPerson(person);
+
+                            }
+
+                        }
+
+                    }
+                });
+
+
+        loadingDialog.dismiss();
 
     }
 

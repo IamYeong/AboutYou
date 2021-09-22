@@ -118,7 +118,10 @@ public class InformationActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //불러오기
+        //정보 셋팅
+
+
+        //메모 불러오기
 
     }
 
@@ -137,6 +140,8 @@ public class InformationActivity extends AppCompatActivity {
     }
 
     private void updateProfile() {
+
+
 
     }
 

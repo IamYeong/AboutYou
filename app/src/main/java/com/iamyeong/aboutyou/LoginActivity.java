@@ -80,9 +80,6 @@ public class LoginActivity extends AppCompatActivity {
 
     //private ActivityResultCallback<ActivityResult> activityResultCallback;
 
-    private static final String GOOGLE_TAG = "com.iamyeong.aboutyou.google.tag";
-    private static final String FACEBOOK_TAG = "com.iamyeong.aboutyou.facebook.tag";
-    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
 
     }
 
