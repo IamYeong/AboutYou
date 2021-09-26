@@ -2,6 +2,7 @@ package com.iamyeong.aboutyou;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,17 +105,10 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
             @Override
             public void onClick(View v) {
 
-                FragmentTransaction transaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
-                MemoFragment fragment = new MemoFragment();
-                fragment.setDataListener((OnFragmentDataNotifyListener<Memo>)context);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("MEMO", memo);
-                fragment.setArguments(bundle);
-                if (fragment.isAdded()) {
-                    transaction.remove(fragment);
-                }
+                Intent intent = new Intent(context, MemoActivity.class);
 
-                transaction.add(R.id.info_container, fragment);
+                intent.putExtra("MEMO", memo);
+                context.startActivity(intent);
 
             }
         });

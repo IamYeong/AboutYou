@@ -258,6 +258,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
+                            task.getResult().getAdditionalUserInfo().isNewUser();
+
                             startSplash(task.getResult().getUser());
                             //Toast.makeText(LoginActivity.this, "Facebook!", Toast.LENGTH_SHORT).show();
 
@@ -288,13 +290,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void logout() {
-        FirebaseAuth.getInstance().signOut();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            FirebaseAuth.getInstance().signOut();
+        }
     }
 
     private void startSplash(FirebaseUser user) {
         Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
-        intent.putExtra("USER", user);
-        intent.putExtra("FIRST", isFirst);
         startActivity(intent);
         finish();
     }

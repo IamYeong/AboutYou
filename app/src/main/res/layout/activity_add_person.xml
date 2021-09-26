@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddPersonActivity"
+    android:background="@color/theme_light"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:elevation="0dp"
+        android:backgroundTint="@color/theme_light"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_input"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_24"
+            >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <TextView
+                    android:id="@+id/tv_title_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center_vertical|left"
+
+                    android:textColor="@color/white"
+                    android:text="추가하기/변경하기"
+                    android:textSize="20dp"
+                    />
+
+            </FrameLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_input"
+        app:layout_constraintBottom_toTopOf="@id/btn_finish_input"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/tv_name_title_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="20dp"
+
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="이름"
+                android:textSize="30dp"
+                />
+
+            <EditText
+                android:id="@+id/et_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginHorizontal="20dp"
+                android:backgroundTint="@color/white"
+
+                android:textCursorDrawable="@drawable/edit_text_cursor_white"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                />
+
+            <TextView
+                android:id="@+id/tv_name_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textColor="@color/white"
+                android:text="이름 입력 리스너"
+                android:textSize="15dp"
+                android:textStyle="bold"
+
+                android:layout_marginLeft="20dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_club_title_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="20dp"
+
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="소속"
+                android:textSize="30dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner_club_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="20dp"
+                    />
+
+                <EditText
+                    android:id="@+id/et_club_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginHorizontal="20dp"
+
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:backgroundTint="@color/white"
+                    />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="20dp"
+
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="생년월일"
+                android:textSize="30dp"
+                />
+
+            <LinearLayout
+                android:id="@+id/layout_birth_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                app:layout_constraintTop_toBottomOf="@id/et_club_input"
+
+                >
+
+                <NumberPicker
+                    android:id="@+id/picker_year_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginHorizontal="10dp"
+                    android:theme="@style/AppTheme.Picker"
+                    />
+
+
+
+                <NumberPicker
+                    android:id="@+id/picker_month_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:theme="@style/AppTheme.Picker"
+                    />
+
+                <NumberPicker
+                    android:id="@+id/picker_day_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:theme="@style/AppTheme.Picker"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="남성"
+                    android:textSize="30dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+
+                    android:layout_gravity="center_vertical"
+
+                    />
+
+                <CheckBox
+                    android:id="@+id/chk_box_male_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
+
+                    android:layout_gravity="center_vertical"
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="여성"
+                    android:textSize="30dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="50dp"
+
+                    />
+
+                <CheckBox
+                    android:id="@+id/chk_box_female_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
+
+                    android:layout_gravity="center_vertical"
+                    />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_intro_title_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="20dp"
+
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="한줄소개"
+                android:textSize="30dp"
+                />
+
+            <EditText
+                android:id="@+id/et_intro_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="30dp"
+                android:backgroundTint="@color/white"
+
+                android:textCursorDrawable="@drawable/edit_text_cursor_white"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                />
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <android.widget.Button
+        android:id="@+id/btn_finish_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="@color/theme_dark"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:text="완료"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

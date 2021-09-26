@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,14 +29,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iamyeong.aboutyou.dto.Memo;
 import com.iamyeong.aboutyou.dto.Person;
-import com.iamyeong.aboutyou.dto.User;
-import com.iamyeong.aboutyou.listener.OnFragmentDataNotifyListener;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class InformationActivity extends AppCompatActivity implements OnFragmentDataNotifyListener<Memo> {
+public class InformationActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MemoViewAdapter memoViewAdapter;
@@ -45,9 +42,6 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
     private boolean sortAscending = true;
     private ImageView modifyImage;
     private Person person;
-    private FirebaseUser user;
-    private FirebaseFirestore db;
-    private MemoFragment fragment;
     private DocumentReference document;
     private int sortFlag = 0;
     private int searchFlag = 0;
@@ -60,8 +54,10 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
         //정보 받기
         Intent intent = getIntent();
         person = (Person)intent.getSerializableExtra("PERSON");
-        user = (FirebaseUser) intent.getParcelableExtra("USER");
-        db = FirebaseFirestore.getInstance();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         document = db.collection(getString(R.string.app_package_name))
                 .document(user.getUid()).collection("PEOPLE")
                 .document(person.getPathId());
@@ -96,14 +92,10 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
         modifyImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputFragment fragment = new InputFragment(person, InputFragment.PERSON_UPDATE);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-                if (fragment.isAdded()) {
-                    transaction.remove(fragment);
-                }
-
-                transaction.add(R.id.info_container, fragment).commit();
+                Intent intent = new Intent(InformationActivity.this, AddPersonActivity.class);
+                intent.putExtra("PERSON", person);
+                startActivity(intent);
 
             }
         });
@@ -134,25 +126,11 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
             @Override
             public void onClick(View v) {
 
-                fab.setVisibility(View.INVISIBLE);
+                //fab.setVisibility(View.INVISIBLE);
 
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                fragment = new MemoFragment();
-                fragment.setDataListener(InformationActivity.this);
-                Bundle bundle = new Bundle();
-                Memo memo = new Memo();
-                memo.setTitle("");
-                memo.setContent("");
-                bundle.putSerializable("MEMO", memo);
-                fragment.setArguments(bundle);
-
-                transaction.addToBackStack(null);
-
-                if (fragment.isAdded()) {
-                    transaction.remove(fragment);
-                }
-
-                transaction.add(R.id.info_container, fragment).commit();
+                Intent intent = new Intent(InformationActivity.this, MemoActivity.class);
+                intent.putExtra("MEMO", new Memo());
+                startActivity(intent);
 
             }
         });
@@ -179,25 +157,12 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
 
     }
 
-    private void addMemo(Memo memo) {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("document_id", memo.getDocumentId());
-        map.put("memo_title", memo.getTitle());
-        map.put("memo_content", memo.getContent());
-
-        document.collection("MEMO")
-                .add(map)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        selectMemos();
-                    }
-                });
-
-    }
 
     private void selectMemos() {
+
+        LoadingDialog dialog = new LoadingDialog(InformationActivity.this);
+        dialog.show();
 
         document.collection("MEMO")
                 .get()
@@ -206,10 +171,9 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         //문서가 비어있지 않다면
-                        if (task.getResult().getDocuments().size() != 0 && task.getResult().getDocuments() != null) {
+                        if (task.getResult().getDocuments().size() != 0) {
 
-                            LoadingDialog dialog = new LoadingDialog(InformationActivity.this);
-                            dialog.show();
+
 
                             memoViewAdapter.clearMemos();
 
@@ -233,43 +197,11 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
 
     }
 
-    private void updateMemo(Memo memo) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("document_id", memo.getDocumentId());
-        map.put("memo_title", memo.getTitle());
-        map.put("memo_content", memo.getContent());
-
-
-        document.collection("MEMO")
-                .document(memo.getDocumentId())
-                .set(map)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        selectMemos();
-                    }
-                });
-
-    }
-
-    private void deleteMemo(Memo memo) {
-
-        document.collection("MEMO")
-                .document(memo.getDocumentId())
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        selectMemos();
-                    }
-                });
-
-    }
 
     private void updateProfile() {
 
         nameText.setText(person.getName());
+        //...
 
     }
 
@@ -309,25 +241,5 @@ public class InformationActivity extends AppCompatActivity implements OnFragment
         groupText = findViewById(R.id.tv_group_profile);
 
         fab = findViewById(R.id.fab_memo);
-    }
-
-    @Override
-    public void onFragmentListener(Memo memo) {
-
-        if (fragment.isAdded()) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.remove(fragment);
-        }
-
-        fab.setVisibility(View.VISIBLE);
-
-        if (memo.getDocumentId() == null) {
-            addMemo(memo);
-        } else {
-            updateMemo(memo);
-        }
-
-        //완료되면 로딩 닫고 프래그먼트 제거.
-
     }
 }

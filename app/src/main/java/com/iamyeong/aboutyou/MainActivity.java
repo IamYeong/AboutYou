@@ -24,7 +24,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -62,16 +65,8 @@ public class MainActivity extends AppCompatActivity {
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
 
-        //계정 가져오기
-        Intent intent = getIntent();
-        user = (FirebaseUser) intent.getParcelableExtra("USER");
-        isFirst = intent.getBooleanExtra("FIRST", false);
-        Toast.makeText(this, user.getEmail() + ", " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
-
         db = FirebaseFirestore.getInstance();
-        firestoreDoc = db.collection(getString(R.string.app_package_name)).document(user.getUid());
-
-        //System.out.println(user.getUid());
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         //Find id
         editText = findViewById(R.id.et_search_main);
@@ -80,26 +75,15 @@ public class MainActivity extends AppCompatActivity {
 
         //Adapter set
         personViewAdapter = new PersonViewAdapter(this);
-        personViewAdapter.setUser(user);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setAdapter(personViewAdapter);
-
-        //personViewAdapter.addPerson(new Person());
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                InputFragment fragment = new InputFragment();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-                if (fragment.isAdded()) {
-                    transaction.remove(fragment);
-                }
-
-                transaction.add(R.id.main_container, fragment);
-                transaction.commit();
-
+               Intent intent = new Intent(MainActivity.this, AddPersonActivity.class);
+               startActivity(intent);
 
             }
         });
@@ -140,11 +124,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (isFirst) {
-            isFirst = false;
-            addContacts();
+        if (user != null) {
+
+            firestoreDoc = db.collection(getString(R.string.app_package_name)).document(user.getUid());
+
+            FirebaseUserMetadata metadata = user.getMetadata();
+
+            if (metadata != null) {
+                if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+                    addContacts();
+                } else {
+                    selectPeople();
+                }
+            }
+
+
         } else {
-            selectPeople();
+            Toast.makeText(this, "User is null", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -209,6 +205,32 @@ public class MainActivity extends AppCompatActivity {
 
 
         loadingDialog.dismiss();
+
+    }
+
+    private void selectUserInfo() {
+
+        firestoreDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                /*
+                user.getMetadata();
+                user.getMultiFactor();
+                user.getUid();
+                user.getDisplayName();
+                user.getEmail();
+                user.getPhoneNumber();
+                user.getPhotoUrl();
+                user.getProviderData();
+                user.getTenantId();
+                user.getIdToken(true);
+
+
+                 */
+
+            }
+        });
 
     }
 

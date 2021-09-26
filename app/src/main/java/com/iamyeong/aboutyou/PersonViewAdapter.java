@@ -25,7 +25,7 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     private List<Person> people;
     private List<Person> copyPeople;
     private Context context;
-    private FirebaseUser user;
+    private String userId;
 
     public PersonViewAdapter(Context context) {
         people = new ArrayList<>();
@@ -33,8 +33,8 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
         this.context = context;
     }
 
-    public void setUser(FirebaseUser user) {
-        this.user = user;
+    public void setUser(String userId) {
+        this.userId = userId;
     }
 
     public void addPerson(Person person) {
@@ -85,7 +85,6 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
     public void onBindViewHolder(@NonNull PersonViewHolder holder, int position) {
 
         Person person = people.get(position);
-
         holder.name.setText(person.getName());
         //...
 
@@ -94,7 +93,6 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, InformationActivity.class);
                 intent.putExtra("PERSON", person);
-                intent.putExtra("USER", user);
                 context.startActivity(intent);
             }
         });

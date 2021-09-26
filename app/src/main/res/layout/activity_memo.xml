@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MemoFragment"
-    android:background="@color/white"
-    >
+    tools:context=".MemoActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_memo"
@@ -103,6 +101,5 @@
         android:textSize="25dp"
 
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
