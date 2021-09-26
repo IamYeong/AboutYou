@@ -67,6 +67,7 @@ public class InformationActivity extends AppCompatActivity {
 
         //어댑터 세팅
         memoViewAdapter = new MemoViewAdapter(this);
+        memoViewAdapter.setPerson(person);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(memoViewAdapter);
 
@@ -130,6 +131,7 @@ public class InformationActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(InformationActivity.this, MemoActivity.class);
                 intent.putExtra("MEMO", new Memo());
+                intent.putExtra("PERSON", person);
                 startActivity(intent);
 
             }
@@ -188,9 +190,11 @@ public class InformationActivity extends AppCompatActivity {
 
                             //정렬
 
-                            dialog.dismiss();
-
                         }
+
+                        dialog.dismiss();
+
+
 
                     }
                 });

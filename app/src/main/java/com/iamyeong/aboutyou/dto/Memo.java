@@ -7,7 +7,7 @@ public class Memo implements Comparable<Memo>, Serializable {
     private String title;
     private String content;
     private long date;
-    private String documentId;
+    private String documentId = "";
 
     public String getDocumentId() {
         return documentId;

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.iamyeong.aboutyou.dialog.MemoDialog;
 import com.iamyeong.aboutyou.dto.Memo;
+import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnFragmentDataNotifyListener;
 
 import java.util.ArrayList;
@@ -28,12 +29,17 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
     private List<Memo> memos;
     private List<Memo> memosForFiltering;
     private Context context;
+    private Person person;
     //SimpleDataFormat
 
     public MemoViewAdapter(Context context) {
         memos = new ArrayList<>();
         memosForFiltering = new ArrayList<>();
         this.context = context;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public void addMemo(Memo memo) {
@@ -108,6 +114,7 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
                 Intent intent = new Intent(context, MemoActivity.class);
 
                 intent.putExtra("MEMO", memo);
+                intent.putExtra("PERSON", person);
                 context.startActivity(intent);
 
             }

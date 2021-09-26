@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                Intent intent = new Intent(MainActivity.this, AddPersonActivity.class);
+               intent.putExtra("PERSON", new Person());
                startActivity(intent);
 
             }
@@ -168,16 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+        loadingDialog.dismiss();
         selectPeople();
 
     }
 
     private void selectPeople() {
 
-        if (loadingDialog == null) {
-            loadingDialog = new LoadingDialog(MainActivity.this);
-            loadingDialog.show();
-        }
+
+        loadingDialog = new LoadingDialog(MainActivity.this);
+        loadingDialog.show();
+
 
         firestoreDoc.collection("PEOPLE")
                 .get()
@@ -198,13 +200,15 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
+                            loadingDialog.dismiss();
+
                         }
 
                     }
                 });
 
 
-        loadingDialog.dismiss();
+
 
     }
 

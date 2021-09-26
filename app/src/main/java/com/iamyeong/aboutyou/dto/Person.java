@@ -13,7 +13,7 @@ public class Person implements Serializable {
     private int birthDay;
     private String group;
     private String tinyInfo;
-    private String pathId;
+    private String pathId = "";
     private boolean started;
 
     public String getPathId() {
@@ -79,4 +79,6 @@ public class Person implements Serializable {
     public void setStarted(boolean started) {
         this.started = started;
     }
+
+
 }

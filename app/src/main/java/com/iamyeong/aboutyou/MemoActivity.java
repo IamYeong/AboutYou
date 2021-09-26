@@ -56,7 +56,7 @@ public class MemoActivity extends AppCompatActivity {
 
         title.setText(memo.getTitle());
         content.setText(memo.getContent());
-        memo.setDocumentId(null);
+        //memo.setDocumentId(null);
 
         Toolbar toolbar = findViewById(R.id.toolbar_memo);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,34 +111,26 @@ public class MemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (memo.getDocumentId().isEmpty()) {
+                if (memo.getDocumentId().equals("")) {
 
                     Memo memo = new Memo();
+
+                    String titleChar = title.getText().toString();
+                    String contentChar = content.getText().toString();
+                    //날짜
+
+                    memo.setTitle(titleChar);
+                    memo.setContent(contentChar);
 
 
                     addMemo(memo);
                 } else {
-                    updateMemo();
+                    updateMemo(memo);
                 }
 
             }
         });
 
-
-    }
-
-    private void updateMemo() {
-
-        String titleChar = title.getText().toString();
-        String contentChar = content.getText().toString();
-        //날짜
-
-        memo.setTitle(titleChar);
-        memo.setContent(contentChar);
-
-    }
-
-    private void createMemo() {
 
     }
 
@@ -155,12 +147,21 @@ public class MemoActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         //selectMemos();
+
+                        finish();
                     }
                 });
 
     }
 
     private void updateMemo(Memo memo) {
+
+        String titleChar = title.getText().toString();
+        String contentChar = content.getText().toString();
+        //날짜
+
+        memo.setTitle(titleChar);
+        memo.setContent(contentChar);
 
         Map<String, Object> map = new HashMap<>();
         map.put("document_id", memo.getDocumentId());
@@ -174,6 +175,7 @@ public class MemoActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+
                         finish();
                     }
                 });
