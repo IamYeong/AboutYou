@@ -46,7 +46,7 @@ public class MemoActivity extends AppCompatActivity {
         memo = (Memo) intent.getSerializableExtra("MEMO");
         person = (Person) intent.getSerializableExtra("PERSON");
 
-        document = db.collection(getString(R.string.app_package_name))
+        document = db.collection(getPackageName())
                 .document(user.getUid()).collection("PEOPLE")
                 .document(person.getPathId());
 

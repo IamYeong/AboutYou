@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">AboutYou</string>
-    <string name="app_package_name">com.iamyeong.aboutyou</string>
 
     <string name="kakao_native_app_key">617028f723b9be2e9e4d701e0a5915d3</string>
     <string name="facebook_app_id">891878308429231</string>

@@ -57,7 +57,7 @@ public class AddPersonActivity extends AppCompatActivity {
         person = (Person) intent.getSerializableExtra("PERSON");
 
         db = FirebaseFirestore.getInstance();
-        collection = db.collection(getString(R.string.app_package_name))
+        collection = db.collection(getPackageName())
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .collection("PEOPLE");
 

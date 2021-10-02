@@ -51,8 +51,14 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
 import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
@@ -62,7 +68,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button emailLoginButton, googleLoginButton;
     private LoginButton facebookLoginButton;
     private FirebaseAuth mAuth;
-    private boolean isFirst = false;
+    private boolean isSuccess = false;
+    private FirebaseFirestore db;
+    private CollectionReference firestoreCollection;
     //private ActionCodeSettings actionCodeSettings;
     //private Uri deepLink;
 
@@ -86,7 +94,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        firestoreCollection = db.collection(getApplicationContext().getPackageName());
+        //mAuth.getPendingAuthResult().getResult().getAdditionalUserInfo().isNewUser();
 
         //FindViewById
         emailEdit = findViewById(R.id.et_email_input);
@@ -103,7 +114,13 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailEdit.getText().toString();
                 String password = pwEdit.getText().toString();
 
-                signEmailAccount(email, password);
+                if (email.length() != 0) {
+                    signEmailAccount(email, password);
+                } else {
+                    System.out.println("이메일을 작성해주세요!");
+                }
+
+
 
 
 
@@ -140,10 +157,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
 
+                System.out.println("Facebook cancel");
             }
 
             @Override
             public void onError(FacebookException error) {
+
+                System.out.println("Facebook Error");
 
             }
         });
@@ -159,6 +179,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
     }
 
@@ -182,11 +208,20 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("FIRST", true);
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            firestoreCollection.document(user.getUid())
+                                    .set(map)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(@NonNull Void aVoid) {
+                                            startSplash();
+                                        }
+                                    });
 
-                            startSplash(user);
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -201,43 +236,58 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signEmailAccount(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            startSplash(user);
-
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-
-                            TwoButtonDialog dialog = new TwoButtonDialog(LoginActivity.this, TwoButtonDialog.DIALOG_EMAIL_ACCOUNT);
-                            dialog.setOnDialogButtonClickListener(new OnDialogButtonClickListener() {
-                                @Override
-                                public void onDialogButtonClick(boolean selectButton) {
-                                    if (selectButton) {
-                                        isFirst = true;
-                                        createEmailAccount(email, password);
-                                    } else {
-                                        dialog.dismiss();
-                                    }
-                                }
-                            });
-                            dialog.show();
-
-                        }
-                    }
-                })
 
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+
+                        //이메일이나 비밀번호를 점검해주세요.
+                        TwoButtonDialog dialog = new TwoButtonDialog(LoginActivity.this, TwoButtonDialog.DIALOG_EMAIL_ACCOUNT);
+                        dialog.setOnDialogButtonClickListener(new OnDialogButtonClickListener() {
+                            @Override
+                            public void onDialogButtonClick(boolean selectButton) {
+                                if (selectButton) {
+                                    createEmailAccount(email, password);
+                                }
+
+                                dialog.dismiss();
+                            }
+                        });
+
+                        dialog.show();
+
+                    }
+                })
+
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(@NonNull AuthResult authResult) {
+
+                        System.out.println("on success : " + authResult.getUser().getEmail());
+
+                        isSuccess = true;
+
+                    }
+                })
+
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (isSuccess) {
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("FIRST", false);
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            firestoreCollection.document(user.getUid())
+                                    .set(map)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(@NonNull Void aVoid) {
+                                            startSplash();
+                                        }
+                                    });
+
+                        }
 
                     }
                 });
@@ -252,37 +302,50 @@ public class LoginActivity extends AppCompatActivity {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(task.getResult().getIdToken(), null);
         mAuth.signInWithCredential(credential)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("구글 로그인 실패");
+                    }
+                })
+
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(@NonNull AuthResult authResult) {
+                        isSuccess = true;
+                    }
+                })
+
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) {
-
-                            task.getResult().getAdditionalUserInfo().isNewUser();
-
-                            startSplash(task.getResult().getUser());
-                            //Toast.makeText(LoginActivity.this, "Facebook!", Toast.LENGTH_SHORT).show();
-
-                        }
-
+                        if (isSuccess) startSplash();
                     }
-
                 });
     }
 
     private void signFacebookAccount(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("페북 로그인 실패");
+                    }
+                })
+
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(@NonNull AuthResult authResult) {
+                        isSuccess = true;
+                    }
+                })
+
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) {
-
-                            startSplash(task.getResult().getUser());
-                            //Toast.makeText(LoginActivity.this, "Facebook!", Toast.LENGTH_SHORT).show();
-
-                        }
+                        if (isSuccess) startSplash();
                     }
                 });
 
@@ -298,11 +361,20 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void startSplash(FirebaseUser user) {
-        Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
-        startActivity(intent);
-        finish();
+    private void startSplash() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            System.out.println("User is null");
+        }
+
     }
+
 
 
 

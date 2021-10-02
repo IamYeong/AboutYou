@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText;
     private PersonViewAdapter personViewAdapter;
     private FirebaseFirestore db;
-    private DocumentReference firestoreDoc;
+    private FirebaseAuth auth;
+    private DocumentReference firestoreDocument;
     private ImageView fab;
     private FirebaseUser user;
-    private boolean isFirst;
+
     private LoadingDialog loadingDialog = null;
 
     @Override
@@ -66,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        firestoreDocument = db.collection(getPackageName()).document(user.getUid());
 
         //Find id
         editText = findViewById(R.id.et_search_main);
@@ -111,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Override
@@ -127,22 +133,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (user != null) {
 
-            firestoreDoc = db.collection(getString(R.string.app_package_name)).document(user.getUid());
-
-            FirebaseUserMetadata metadata = user.getMetadata();
-
-            if (metadata != null) {
-                if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
-                    addContacts();
-                } else {
-                    selectPeople();
+            firestoreDocument.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                    Map<String, Object> map = documentSnapshot.getData();
+                    if ((boolean)map.get("FIRST")) {
+                        System.out.println("ADD");
+                        addContacts();
+                    } else {
+                        System.out.println("SELECT");
+                        selectPeople();
+                    }
                 }
-            }
+            });
 
-
-        } else {
-            Toast.makeText(this, "User is null", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 
@@ -165,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             //...
 
 
-            firestoreDoc.collection("PEOPLE").add(map);
+            firestoreDocument.collection("PEOPLE").add(map);
 
 
         }
@@ -181,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         loadingDialog.show();
 
 
-        firestoreDoc.collection("PEOPLE")
+        firestoreDocument.collection("PEOPLE")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -214,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectUserInfo() {
 
-        firestoreDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestoreDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
