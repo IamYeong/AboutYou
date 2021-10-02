@@ -71,11 +71,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isSuccess = false;
     private FirebaseFirestore db;
     private CollectionReference firestoreCollection;
-    //private ActionCodeSettings actionCodeSettings;
-    //private Uri deepLink;
 
-    //private FireStoreManager fireStoreManager;
-
+    //구글 로그인 런쳐 콜백
     private ActivityResultLauncher<Intent> googleLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -86,9 +83,6 @@ public class LoginActivity extends AppCompatActivity {
             }
     );
 
-    //private ActivityResultCallback<ActivityResult> activityResultCallback;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         firestoreCollection = db.collection(getApplicationContext().getPackageName());
-        //mAuth.getPendingAuthResult().getResult().getAdditionalUserInfo().isNewUser();
 
         //FindViewById
         emailEdit = findViewById(R.id.et_email_input);
@@ -107,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         facebookLoginButton = findViewById(R.id.btn_facebook_login);
         pwEdit = findViewById(R.id.et_email_pw_input);
 
+        //View 클릭 리스너 등록
         emailLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +113,6 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     System.out.println("이메일을 작성해주세요!");
                 }
-
-
-
-
 
             }
         });
@@ -144,6 +134,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //페이스북 로그인 초기화
         FacebookSdk.sdkInitialize(getApplicationContext());
         facebookLoginButton.setReadPermissions("", "");
         facebookLoginButton.setReadPermissions("email", "public_profile");
@@ -201,6 +192,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    //이메일 계정 생성.
     private void createEmailAccount(String email, String password) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -209,18 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("FIRST", true);
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            firestoreCollection.document(user.getUid())
-                                    .set(map)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(@NonNull Void aVoid) {
-                                            startSplash();
-                                        }
-                                    });
+                            startSplash();
 
                             //updateUI(user);
                         } else {
@@ -264,7 +245,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(@NonNull AuthResult authResult) {
 
                         System.out.println("on success : " + authResult.getUser().getEmail());
-
                         isSuccess = true;
 
                     }
@@ -274,20 +254,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if (isSuccess) {
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("FIRST", false);
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            firestoreCollection.document(user.getUid())
-                                    .set(map)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(@NonNull Void aVoid) {
-                                            startSplash();
-                                        }
-                                    });
-
-                        }
+                        if (isSuccess) startSplash();
 
                     }
                 });
@@ -298,8 +265,9 @@ public class LoginActivity extends AppCompatActivity {
     //결과에 따라 유저정보를 저장한 뒤 바로 로그인 or 계정 생성
     private void signGoogleAccount(ActivityResult result) {
 
-        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+        //result.getResultCode()
 
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
         AuthCredential credential = GoogleAuthProvider.getCredential(task.getResult().getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnFailureListener(new OnFailureListener() {
@@ -325,6 +293,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signFacebookAccount(AccessToken token) {
+
+
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
 

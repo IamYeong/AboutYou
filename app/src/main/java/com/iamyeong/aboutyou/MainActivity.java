@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
@@ -56,10 +57,13 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private DocumentReference firestoreDocument;
+    private CollectionReference firestoreCollection;
     private ImageView fab;
     private FirebaseUser user;
 
     private LoadingDialog loadingDialog = null;
+
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        firestoreDocument = db.collection(getPackageName()).document(user.getUid());
 
-        //Find id
+        firestoreCollection = db.collection(getPackageName());
+
         editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);
         recyclerView = findViewById(R.id.rv_main);
@@ -133,19 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (user != null) {
 
-            firestoreDocument.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                    Map<String, Object> map = documentSnapshot.getData();
-                    if ((boolean)map.get("FIRST")) {
-                        System.out.println("ADD");
-                        addContacts();
-                    } else {
-                        System.out.println("SELECT");
-                        selectPeople();
-                    }
-                }
-            });
+            checkFirstAuth(user.getUid());
 
         }
 
@@ -270,4 +262,39 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
     }
+
+    private void checkFirstAuth(String uid) {
+
+        LoadingDialog dialog = new LoadingDialog(MainActivity.this);
+        dialog.show();
+
+        firestoreCollection.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+
+                        List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
+
+                        for (DocumentSnapshot doc : documents) {
+
+                            if (doc.getId().equals(uid)) {
+                                isFirst = false;
+                            }
+
+                        }
+
+                        firestoreDocument = firestoreCollection.document(uid);
+
+                        if (isFirst) {
+                            addContacts();
+                        } else {
+                            selectPeople();
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+
+    }
+
 }
