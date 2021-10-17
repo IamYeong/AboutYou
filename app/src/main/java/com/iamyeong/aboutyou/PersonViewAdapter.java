@@ -50,6 +50,8 @@ public class PersonViewAdapter extends RecyclerView.Adapter<PersonViewHolder> {
             copyPeople.clear();
         }
 
+        notifyDataSetChanged();
+
     }
 
     public void filtering(String pattern) {
@@ -109,7 +111,6 @@ class PersonViewHolder extends RecyclerView.ViewHolder {
 
     protected TextView name, description;
     protected ImageView profileImage, settingImage;
-    protected Button button1, button2;
     protected CardView cardView;
 
     public PersonViewHolder(@NonNull View itemView) {
@@ -119,8 +120,6 @@ class PersonViewHolder extends RecyclerView.ViewHolder {
         description = itemView.findViewById(R.id.tv_profile_description);
         profileImage = itemView.findViewById(R.id.img_profile);
         settingImage = itemView.findViewById(R.id.img_setting);
-        button1 = itemView.findViewById(R.id.btn_profile);
-        button2 = itemView.findViewById(R.id.btn_edit);
         cardView = itemView.findViewById(R.id.card_person);
     }
 

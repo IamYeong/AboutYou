@@ -22,6 +22,18 @@ public class SharedPreferencesManager {
         return context.getSharedPreferences(PREFERENCES_NAME, context.MODE_PRIVATE);
     }
 
+    public static String getPreviousEmail(Context context, String key) {
+        SharedPreferences preferences = getSharedPreference(context);
+        return preferences.getString(key, "PRE_EMAIL");
+    }
+
+    public static boolean setPreviousEmail(Context context, String key, String value) {
+        SharedPreferences preferences = getSharedPreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        return editor.commit();
+    }
+
     public static int getPreferenceLanguage(Context context, String key) {
 
         SharedPreferences preferences = getSharedPreference(context);

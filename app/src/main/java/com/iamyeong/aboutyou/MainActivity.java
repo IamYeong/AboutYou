@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.iamyeong.aboutyou.dialog.TwoButtonDialog;
@@ -43,10 +45,13 @@ import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
 import android.provider.ContactsContract;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private PersonViewAdapter personViewAdapter;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
-    private DocumentReference firestoreDocument;
-    private CollectionReference firestoreCollection;
+    private DocumentReference userDocument;
+    private CollectionReference appCollection;
     private ImageView fab;
     private FirebaseUser user;
 
@@ -65,18 +70,50 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isFirst = true;
 
+    private OnCompleteListener<QuerySnapshot> onCompleteListener = new OnCompleteListener<QuerySnapshot>() {
+        @Override
+        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+            if (task.isSuccessful()) {
+
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    System.out.println("ID" + document.getId());
+
+                    if (document.getId().equals(user.getUid())) isFirst = false;
+
+                }
+
+                loadingDialog.dismiss();
+                loadingDialog = null;
+
+                if (isFirst) {
+                    addContacts();
+                } else {
+                    selectPeople();
+                }
+
+
+            } else {
+                System.out.println(task.getException());
+            }
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Light mode or Night mode
         setContentView(R.layout.activity_main);
 
-        db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        user = auth.getCurrentUser();
 
-        firestoreCollection = db.collection(getPackageName());
+        db = FirebaseFirestore.getInstance();
+        appCollection = db.collection(getPackageName());
+        userDocument = appCollection.document(user.getUid());
 
+        //View id find
         editText = findViewById(R.id.et_search_main);
         fab = findViewById(R.id.fab_main);
         recyclerView = findViewById(R.id.rv_main);
@@ -146,8 +183,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void addContacts() {
 
+        System.out.println("Add" + userDocument.getId());
+
         loadingDialog = new LoadingDialog(MainActivity.this);
         loadingDialog.show();
+
+        WriteBatch batch = db.batch();
 
         Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
@@ -162,40 +203,49 @@ public class MainActivity extends AppCompatActivity {
             map.put("person_number", number);
             //...
 
-
-            firestoreDocument.collection("PEOPLE").add(map);
+            DocumentReference documentReference = userDocument.collection("PEOPLE").document();
+            batch.set(documentReference, map);
 
 
         }
-        loadingDialog.dismiss();
-        selectPeople();
+
+        Map<String, Object> userField = new HashMap<>();
+        userField.put("EXIST", true);
+        batch.set(userDocument, userField);
+
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                loadingDialog.dismiss();
+                selectPeople();
+            }
+        });
+
+
 
     }
 
     private void selectPeople() {
 
+        System.out.println("Select" + userDocument.getId());
 
         loadingDialog = new LoadingDialog(MainActivity.this);
         loadingDialog.show();
 
 
-        firestoreDocument.collection("PEOPLE")
+        userDocument.collection("PEOPLE")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
-
                             personViewAdapter.clearPeople();
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            for (DocumentSnapshot doc : documents) {
-
+                            for (QueryDocumentSnapshot document : task.getResult()) {
                                 Person person = new Person();
-                                person.setName(doc.get("person_name").toString());
-                                person.setPathId(doc.getId());
+                                person.setName(document.get("person_name").toString());
+                                person.setPathId(document.getId());
                                 personViewAdapter.addPerson(person);
-
                             }
 
                             loadingDialog.dismiss();
@@ -212,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectUserInfo() {
 
-        firestoreDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        userDocument.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
@@ -265,35 +315,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkFirstAuth(String uid) {
 
-        LoadingDialog dialog = new LoadingDialog(MainActivity.this);
-        dialog.show();
+        loadingDialog = new LoadingDialog(MainActivity.this);
+        loadingDialog.show();
+        System.out.println(appCollection.getId() + ", " + uid);
 
-        firestoreCollection.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+        appCollection.get().addOnCompleteListener(onCompleteListener);
 
-                        List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
-
-                        for (DocumentSnapshot doc : documents) {
-
-                            if (doc.getId().equals(uid)) {
-                                isFirst = false;
-                            }
-
-                        }
-
-                        firestoreDocument = firestoreCollection.document(uid);
-
-                        if (isFirst) {
-                            addContacts();
-                        } else {
-                            selectPeople();
-                        }
-                        dialog.dismiss();
-
-                    }
-                });
 
     }
 

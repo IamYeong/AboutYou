@@ -19,7 +19,7 @@
             android:id="@+id/img_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_baseline_attribution_theme"
+            android:src="@drawable/ic_baseline_emoji_emotions_24"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -65,35 +65,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
 
             android:layout_margin="20dp"
-            android:src="@drawable/ic_baseline_more_vert_24"
+            android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
             />
 
-        <android.widget.Button
-            android:id="@+id/btn_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
 
-            app:layout_constraintLeft_toRightOf="@id/img_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_profile_description"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            android:background="@drawable/round_fill_button"
-            android:layout_margin="10dp"
-
-            />
-
-        <android.widget.Button
-            android:id="@+id/btn_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-
-            app:layout_constraintLeft_toRightOf="@id/btn_profile"
-            app:layout_constraintTop_toTopOf="@id/btn_profile"
-            app:layout_constraintBottom_toBottomOf="@id/btn_profile"
-            android:layout_marginLeft="10dp"
-
-            android:background="@drawable/round_empty_button"
-            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

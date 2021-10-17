@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        firestoreCollection = db.collection(getApplicationContext().getPackageName());
+        firestoreCollection = db.collection(getPackageName());
 
         //FindViewById
         emailEdit = findViewById(R.id.et_email_input);
@@ -100,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         facebookLoginButton = findViewById(R.id.btn_facebook_login);
         pwEdit = findViewById(R.id.et_email_pw_input);
 
+        emailEdit.setText(SharedPreferencesManager.getPreviousEmail(LoginActivity.this, "PRE_EMAIL"));
+
         //View 클릭 리스너 등록
         emailLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +109,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 String email = emailEdit.getText().toString();
                 String password = pwEdit.getText().toString();
+
+                SharedPreferencesManager.setPreviousEmail(LoginActivity.this, "PRE_EMAIL", email);
 
                 if (email.length() != 0) {
                     signEmailAccount(email, password);
@@ -315,6 +319,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        //SharedPreferencesManager.setPreviousEmail(LoginActivity.this, "PRE_EMAIL", )
                         if (isSuccess) startSplash();
                     }
                 });
@@ -332,6 +337,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startSplash() {
+
+        //로그인 이메일 정보만 저장
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

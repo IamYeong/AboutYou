@@ -22,6 +22,7 @@ import com.iamyeong.aboutyou.dto.Memo;
 import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnDialogButtonClickListener;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,11 +118,12 @@ public class MemoActivity extends AppCompatActivity {
 
                     String titleChar = title.getText().toString();
                     String contentChar = content.getText().toString();
+                    long date = Calendar.getInstance().getTime().getTime();
                     //날짜
 
                     memo.setTitle(titleChar);
                     memo.setContent(contentChar);
-
+                    memo.setDate(date);
 
                     addMemo(memo);
                 } else {
@@ -140,6 +142,7 @@ public class MemoActivity extends AppCompatActivity {
         map.put("document_id", memo.getDocumentId());
         map.put("memo_title", memo.getTitle());
         map.put("memo_content", memo.getContent());
+        map.put("memo_date", memo.getDate());
 
         document.collection("MEMO")
                 .add(map)
@@ -158,7 +161,7 @@ public class MemoActivity extends AppCompatActivity {
 
         String titleChar = title.getText().toString();
         String contentChar = content.getText().toString();
-        //날짜
+        //업데이트한 날짜는 반영하면 안 될 것 같음.
 
         memo.setTitle(titleChar);
         memo.setContent(contentChar);

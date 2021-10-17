@@ -20,9 +20,11 @@ import com.iamyeong.aboutyou.dto.Memo;
 import com.iamyeong.aboutyou.dto.Person;
 import com.iamyeong.aboutyou.listener.OnFragmentDataNotifyListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
 
@@ -30,7 +32,7 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
     private List<Memo> memosForFiltering;
     private Context context;
     private Person person;
-    //SimpleDataFormat
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public MemoViewAdapter(Context context) {
         memos = new ArrayList<>();
@@ -103,9 +105,11 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
 
         Memo memo = memos.get(position);
         String contentPart = memo.getContent().substring(0, 20) + "...";
+        String date = dateFormat.format(memo.getDate());
 
         holder.title.setText(memo.getTitle());
         holder.content.setText(contentPart);
+        holder.date.setText(date);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +136,7 @@ class MemoViewHolder extends RecyclerView.ViewHolder {
 
     //Default
     CardView cardView;
-    TextView title, content;
+    TextView title, content, date;
 
     public MemoViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -140,6 +144,7 @@ class MemoViewHolder extends RecyclerView.ViewHolder {
         cardView = itemView.findViewById(R.id.card_memo);
         title = itemView.findViewById(R.id.tv_title_memo_list);
         content = itemView.findViewById(R.id.tv_content_memo_list);
+        date = itemView.findViewById(R.id.tv_date_memo_list);
 
     }
 }
