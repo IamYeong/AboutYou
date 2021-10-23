@@ -104,7 +104,13 @@ public class MemoViewAdapter extends RecyclerView.Adapter<MemoViewHolder> {
     public void onBindViewHolder(@NonNull MemoViewHolder holder, int position) {
 
         Memo memo = memos.get(position);
-        String contentPart = memo.getContent().substring(0, 20) + "...";
+        String contentPart = "";
+        if (memo.getContent().length() > 20) {
+            contentPart = memo.getContent().substring(0, 20) + "...";
+        } else {
+            contentPart = memo.getContent();
+        }
+
         String date = dateFormat.format(memo.getDate());
 
         holder.title.setText(memo.getTitle());
