@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AboutYou">
-        <activity android:name=".AddPersonActivity"></activity>
+        <activity android:name=".ErrorActivity"></activity>
+        <activity android:name=".AddPersonActivity" />
         <activity android:name=".MemoActivity" />
 
         <meta-data
